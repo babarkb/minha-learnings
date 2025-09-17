@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Http\Resources\Admin\AdminResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -38,6 +40,9 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user()
                     ? UserResource::make($request->user())->resolve()
+                    : null,
+                'admin' => Auth::guard('admin')->user()
+                    ? AdminResource::make(Auth::guard('admin')->user())->resolve()
                     : null,
             ],
             'ziggy' => fn () => [
